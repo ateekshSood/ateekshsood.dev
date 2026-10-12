@@ -7,7 +7,7 @@ export default function TerminalDemo() {
     const [done, setDone] = useState(false);
 
     return (
-        <section className="relative flex min-h-svh w-full items-center justify-center px-4">
+        <section className="relative flex min-h-svh w-full items-center justify-center">
             <Terminal
                 commands={[
                     "npx shadcn@latest init",
@@ -27,6 +27,7 @@ export default function TerminalDemo() {
                 typingSpeed={45}
                 delayBetweenCommands={1000}
                 onComplete={() => setDone(true)}
+                enableSound={false}
             />
             {done && (
                 <motion.a

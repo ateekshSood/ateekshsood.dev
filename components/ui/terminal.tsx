@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useReducedMotion } from "motion/react";
 import { Plus, Columns2, Maximize2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -367,6 +368,8 @@ export function Terminal({
     );
     const isLastCommand = commandIdx === commands.length - 1;
 
+    const reduceMotion = useReducedMotion();
+
     useEffect(() => {
         if (!inView || phase !== "idle") return;
         const t = setTimeout(() => setPhase("typing"), initialDelay);
@@ -455,10 +458,26 @@ export function Terminal({
     const completedRef = useRef(false);
 
     useEffect(() => {
+        if (!reduceMotion || phase !== "idle") return;
+
+        const allLines: TerminalLine[] = [];
+        commands.forEach((command, i) => {
+            allLines.push({ type: "command", content: command });
+            (outputs[i] || []).forEach((output) => {
+                allLines.push({ type: "output", content: output });
+            });
+        });
+
+        setLines(allLines);
+        setPhase("done");
+    }, [reduceMotion, phase, commands, outputs]);
+
+    useEffect(() => {
         if (phase !== "done" || completedRef.current) return;
         completedRef.current = true;
         onComplete?.();
     }, [phase, onComplete]);
+
 
     useEffect(() => {
         const interval = setInterval(() => setCursorVisible((v) => !v), 530);
@@ -473,20 +492,20 @@ export function Terminal({
 
     const prompt = (
         <span className="font-bold">
-          <span className="text-[#26a269]">
-            {username}@{host}
-          </span>
-          <span className="text-neutral-100">:</span>
-          <span className=" text-[#2a7bde]">{path}</span>
-          <span className="text-neutral-100">$</span>{" "}
+            <span className="text-[#26a269]">
+                {username}@{host}
+            </span>
+            <span className="text-neutral-100">:</span>
+            <span className=" text-[#2a7bde]">{path}</span>
+            <span className="text-neutral-100">$</span>{" "}
         </span>
-      );
+    );
 
     return (
         <div
             ref={containerRef}
             className={cn(
-                "mx-auto w-full max-w-3xl px-4 font-mono text-xs",
+                "mx-auto w-full max-w-3xl px-4 font-mono text-xs sm:text-sm",
                 className,
             )}
         >
