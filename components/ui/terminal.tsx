@@ -314,6 +314,36 @@ function SyntaxHighlightedText({ text }: { text: string }) {
     );
 }
 
+// Matches emails (name@site.com) and URLs without a scheme (site.com/path).
+// The capture group makes split() keep the matches at the odd indices.
+const LINK_PATTERN =
+    /([\w.+-]+@[\w-]+\.[\w.]+|(?:www\.)?[\w-]+\.(?:com|dev|io|org)\/\S*)/g;
+
+function LinkifiedText({ text }: { text: string }) {
+    const parts = text.split(LINK_PATTERN);
+
+    return (
+        <>
+            {parts.map((part, i) => {
+                if (i % 2 === 0) return part;
+
+                const isEmail = part.includes("@");
+                return (
+                    <a
+                        key={i}
+                        href={isEmail ? `mailto:${part}` : `https://${part}`}
+                        target={isEmail ? undefined : "_blank"}
+                        rel={isEmail ? undefined : "noopener noreferrer"}
+                        className="text-neutral-200 underline decoration-neutral-600 underline-offset-4 transition-colors hover:decoration-neutral-200"
+                    >
+                        {part}
+                    </a>
+                );
+            })}
+        </>
+    );
+}
+
 interface TerminalLine {
     type: "command" | "output";
     content: string;
@@ -544,7 +574,7 @@ export function Terminal({
                                 </span>
                             ) : (
                                 <span className="text-neutral-400">
-                                    {line.content}
+                                    <LinkifiedText text={line.content} />
                                 </span>
                             )}
                         </div>
