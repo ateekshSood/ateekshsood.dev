@@ -10,19 +10,28 @@ export default function TerminalDemo() {
         <section className="relative flex min-h-svh w-full items-center justify-center">
             <Terminal
                 commands={[
-                    "npx shadcn@latest init",
-                    "npm install motion",
-                    "npx shadcn@latest add button card",
-                    "Term Deez Nuts",
+                    "whoami",
+                    "ls",
+                    "cat education.txt",
+                    "ls skills/",
+                    "cat links.txt",
                 ]}
                 outputs={{
-                    0: [
-                        "✔ Preflight checks passed.",
-                        "✔ Created components.json",
-                        "✔ Initialized project.",
+                    0: ["Ateeksh Sood"],
+                    1: ["education.txt  skills/  links.txt"],
+                    2: [
+                        "B.Tech @ UPES",
+                        "BS in Data Science @ IIT Madras",
                     ],
-                    1: ["added 1 package in 2s"],
-                    2: ["✔ Done. Installed button, card."],
+                    3: [
+                        "python  pytorch  scikit-learn  pandas  fastapi  flask",
+                        "react  vue2  docker  java  c",
+                    ],
+                    4: [
+                        "github    github.com/ateekshSood",
+                        "linkedin  linkedin.com/in/ateeksh-sood-62b5aa2a3",
+                        "email     ateekshsood@gmail.com",
+                    ],
                 }}
                 typingSpeed={45}
                 delayBetweenCommands={1000}
